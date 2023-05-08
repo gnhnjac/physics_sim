@@ -20,4 +20,5 @@ main.exe: $(OBJS)
 
 clean:
 	@del *.o
+	@del *.d
 	@del *.exe
