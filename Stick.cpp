@@ -21,7 +21,19 @@ Stick::~Stick()
 
 }
 
-float Stick::update(sf::RenderWindow *window)
+Point *Stick::move_point(float mx, float my)
+{
+
+    if (_p0->check_collision_point(mx, my))
+        return _p0;
+    else if(_p1->check_collision_point(mx, my))
+        return _p1;
+
+    return 0;
+
+}
+
+float Stick::update()
 {
 
     if (_updated)
@@ -59,11 +71,11 @@ float Stick::update(sf::RenderWindow *window)
 
 }
 
-void Stick::update_points(sf::RenderWindow *window)
+void Stick::update_points()
 {
 
-    _p0->update(window);
-    _p1->update(window);
+    _p0->update();
+    _p1->update();
 
 }
 
@@ -95,5 +107,41 @@ void Stick::render(sf::RenderWindow *window, bool _render_points)
 
     if (_render_points)
         render_points(window);
+
+}
+
+void Stick::render_intersect(Stick *s, sf::RenderWindow *window)
+{
+
+    float a0 = _p1->_y - _p0->_y;
+    float b0 = _p0->_x - _p1->_x;
+    float c0 = a0 * _p0->_x + b0 * _p0->_y;
+
+    float a1 = s->_p1->_y - s->_p0->_y;
+    float b1 = s->_p0->_x - s->_p1->_x;
+    float c1 = a1 * s->_p0->_x + b1 * s->_p0->_y;
+
+
+    float d = a0 * b1 - a1 * b0;
+
+    if (d == 0) // if lines are parallel
+        return;
+
+    float intersect_x = ( b1 * c0 - b0 * c1 ) / d;
+    float intersect_y = ( a0 * c1 - a1 * c0 ) / d;
+
+
+    float rx0 = (intersect_x - s->_p0->_x) / (s->_p1->_x - s->_p0->_x);
+    float ry0 = (intersect_y - s->_p0->_y) / (s->_p1->_y - s->_p0->_y);
+
+    float rx1 = (intersect_x - s->_p0->_x) / (s->_p1->_x - s->_p0->_x);
+    float ry1 = (intersect_y - s->_p0->_y) / (s->_p1->_y - s->_p0->_y);
+
+    if (((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1)))
+    {
+        Point inter(intersect_x, intersect_y, true);
+
+        inter.render(window, 5.f);
+    }
 
 }

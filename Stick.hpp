@@ -19,15 +19,20 @@ public:
 
 	~Stick();
 
-	virtual float update(sf::RenderWindow *window);
+	virtual float update();
 
-	void update_points(sf::RenderWindow *window);
+	void update_points();
 
 	void constrain_points(sf::RenderWindow *window);
 
+	Point *move_point(float mx, float my);
+	
 	void render_points(sf::RenderWindow *window);
 
 	void render(sf::RenderWindow *window, bool _render_points);
+
+	void render_intersect(Stick *s, sf::RenderWindow *window);
+
 
 private:
 

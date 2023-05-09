@@ -2,14 +2,18 @@
 #include "Point.hpp"
 #include "Stick.hpp"
 #include "Rope.hpp"
+#include "Arm.hpp"
 #include "VerletSolver.hpp"
+#include "IKSystem.hpp"
 #include <iostream>
 
-#define SOLVER_ITERS 500
+#define SOLVER_ITERS 1000
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "Blame!");
+
+    window.setFramerateLimit(60);
 
     Point left_foot(230.f,500.f);
     Point right_foot(280.f,500.f);
@@ -17,8 +21,8 @@ int main()
     Point left_knee(230.f,470.f);
     Point right_knee(280.f,470.f);
 
-    Point left_pelvis(230.f,440.f, true);
-    Point right_pelvis(280.f,440.f, true);
+    Point left_pelvis(230.f,440.f);
+    Point right_pelvis(280.f,440.f);
 
     Point left_shoulder(230.f,400.f);
     Point right_shoulder(280.f,400.f);
@@ -50,15 +54,15 @@ int main()
 
     Stick chest_stabilizer(&left_shoulder, &right_pelvis);
 
-    Point p0(10.f,250.f,true);
-    Point p1(200.f,200.f,true);
+    Point rp0(10.f,250.f,true);
+    Point rp1(200.f,200.f, true);
 
-    Rope r(&p0,&p1, 0.15);
+    Rope r(&rp0,&rp1, 0.15);
 
-    Point p2(10.f,100.f,true);
-    Point p3(490.f,100.f,true);
+    Point rp2(10.f,100.f,true);
+    Point rp3(490.f,100.f,true);
 
-    Rope r2(&p2,&p3, 0.15);
+    Rope r2(&rp2,&rp3, 0.15);
 
     VerletSolver solver(SOLVER_ITERS);
 
@@ -79,8 +83,24 @@ int main()
     solver.add_stick(&left_arm2);
     solver.add_stick(&right_arm2);
 
+
+    Point p(250.f,500.f);
+
+    IKSystem iks(&p);
+
+    for (float i = 10; i < 200; i += 10)
+    {
+        Point *p;
+        p = new Point(250.f,500.f-i,false,false,false,1);
+
+        iks.add_arm(p);
+    }
+
+    Point *currently_moving = 0;
+
     while (window.isOpen())
     {
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -92,20 +112,40 @@ int main()
                 if(event.key.code == sf::Keyboard::Q)
                 {
                     solver._render_points = !solver._render_points;
-                    std::cout << "horray" << std::endl;
                 }
             }
 
         }
 
         window.clear();
-        
+
         solver.update(&window);
         solver.render(&window);
-        left_hand.apply_force(-0.1,0);
-        right_hand.apply_force(0.1,0);
-        if (p1._x < 400)
-            p1._x += 0.1;
+
+        // get global mouse position
+        sf::Vector2i position = sf::Mouse::getPosition(window);
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {
+            if (!currently_moving)
+                currently_moving = solver.check_move_point(position.x, position.y);
+        }
+        else
+        {
+            currently_moving = 0;
+        }
+
+        if(currently_moving)
+        {
+            currently_moving->_x = position.x;
+            currently_moving->_y = position.y;
+        }
+
+        iks.reach(position.x,position.y);
+
+        iks.render(&window);
+        // left_hand.apply_force(-0.1,0);
+        // right_hand.apply_force(0.1,0);
         window.display();
 
     }

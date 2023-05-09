@@ -42,11 +42,11 @@ Rope::Rope(Point *p0, Point *p1, float resolution, float flex_min_percent, float
 	
 }
 
-void Rope::update_points(sf::RenderWindow *window)
+void Rope::update_points()
 {
 
 	for (FlexStick s : _sticks)
-		s.update_points(window);
+		s.update_points();
 
 }
 
@@ -77,7 +77,23 @@ void Rope::de_update_points()
 
 }
 
-void Rope::update_sticks(sf::RenderWindow *window)
+Point *Rope::check_move_point(float mx, float my)
+{
+
+	for (Stick s : _sticks)
+	{
+		Point *p = s.move_point(mx, my);
+
+		if (p)
+			return p;
+
+	}
+
+	return 0;
+
+}
+
+void Rope::update_sticks()
 {
 
 	float min_stability = 1;
@@ -85,7 +101,7 @@ void Rope::update_sticks(sf::RenderWindow *window)
 	for (auto it = _sticks.begin(); it != _sticks.end(); it++)
     {
 
-    	float stability = it->update(window);
+    	float stability = it->update();
 
     	if (stability < 0 && min_stability >= 0)
 		{

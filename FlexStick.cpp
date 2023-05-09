@@ -23,7 +23,7 @@ FlexStick::FlexStick(Point *p0, Point *p1, float min_length_percent, float max_l
 
 }
 
-float FlexStick::update(sf::RenderWindow *window)
+float FlexStick::update()
 {
 
 	float dx = _p1->_x - _p0->_x;

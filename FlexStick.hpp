@@ -11,7 +11,7 @@ public:
 
 	FlexStick(Point *p0, Point *p1, float min_length_percent, float max_length_percent, float max_stress_percent);
 
-	float update(sf::RenderWindow *window) override;
+	float update() override;
 
 private:
 

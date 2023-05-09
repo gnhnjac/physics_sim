@@ -1,6 +1,7 @@
 #include "Point.hpp"
+#include <tgmath.h>
 
-Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden)
+Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, float radius)
 {
 
 	_x = x;
@@ -9,10 +10,14 @@ Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidd
 	_oldy = oldy;
 	_pinned = is_pinned;
 	_hidden = hidden;
+	_zero_grav = zero_grav;
+
+	if (radius != -1)
+		_radius = radius;
 
 }
 
-Point::Point(float x, float y, bool is_pinned, bool hidden)
+Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, float radius)
 {
 
 	_x = x;
@@ -21,10 +26,14 @@ Point::Point(float x, float y, bool is_pinned, bool hidden)
 	_oldy = y;
 	_pinned = is_pinned;
 	_hidden = hidden;
+	_zero_grav = zero_grav;
+
+	if (radius != -1)
+		_radius = radius;
 
 }
 
-void Point::update(sf::RenderWindow *window)
+void Point::update()
 {
 
 	if(_pinned || _updated)
@@ -38,7 +47,8 @@ void Point::update(sf::RenderWindow *window)
 
 	_x += vx;
 	_y += vy;
-	_y += _gravity;
+	if (!_zero_grav)
+		_y += _gravity;
 
 	_updated = true;
 
@@ -88,13 +98,43 @@ void Point::apply_force(float fx, float fy)
 
 }
 
-void Point::render(sf::RenderWindow *window)
+Point *Point::check_collision_point(float x, float y)
+{
+
+	float dx = x - _x;
+	float dy = y - _y;
+
+	if (sqrt(dx*dx + dy*dy) <= _radius)
+		return this;
+
+	return 0;
+
+}
+
+bool Point::check_collision_circle(float other_x, float other_y, float other_rad)
+{
+
+	float dx = other_x - _x;
+	float dy = other_y - _y;
+
+	if (sqrt(dx*dx + dy*dy) <= _radius+other_rad)
+		return true;
+
+	return false;
+
+}
+
+void Point::render(sf::RenderWindow *window, float radius)
 {
 	if (_hidden)
 		return;
-	sf::CircleShape shape(_radius);
+
+	if (radius == -1)
+		radius = _radius;
+
+	sf::CircleShape shape(radius);
     shape.setFillColor(sf::Color::Green);
-    shape.setPosition(_x-_radius,_y-_radius);
+    shape.setPosition(_x-radius,_y-radius);
     window->draw(shape);
 
 }

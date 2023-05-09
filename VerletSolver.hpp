@@ -30,6 +30,8 @@ public:
 
 	void update(sf::RenderWindow *window);
 
+	Point *check_move_point(float mx, float my);
+
 	void render(sf::RenderWindow *window);
 
 private:
