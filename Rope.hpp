@@ -16,7 +16,7 @@ public:
 
 	float _max_stress_percent = 3;
 
-	bool _allow_tear = true;
+	bool _allow_tear = false;
 	float _min_stability = 1;
 
 	Rope(Point *p0, Point *p1, float resolution, float flex_min_percent = -1, float flex_max_percent = -1);

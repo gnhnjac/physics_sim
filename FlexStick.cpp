@@ -21,6 +21,8 @@ FlexStick::FlexStick(Point *p0, Point *p1, float min_length_percent, float max_l
     _max_length = length * max_length_percent;
     _max_stress = length*max_stress_percent;
 
+    _width = 1;
+
 }
 
 float FlexStick::update()

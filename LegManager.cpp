@@ -16,11 +16,11 @@ LegManager::LegManager(float base, Point *left_pelvis, Point *left_knee, Point *
 	_grnd_left = _left_leg_x;
 	_grnd_right = _right_leg_x;
 
-    _right_leg.add_arm(right_knee);
-    _right_leg.add_arm(right_foot);
+    _right_leg.add_arm(right_knee,2);
+    _right_leg.add_arm(right_foot,2);
 
-    _left_leg.add_arm(left_knee);
-    _left_leg.add_arm(left_foot);
+    _left_leg.add_arm(left_knee,2);
+    _left_leg.add_arm(left_foot,2);
 
 	_step_time = M_PI/_step_cycles;
 
@@ -108,5 +108,13 @@ void LegManager::update(bool is_left_pressed, bool is_right_pressed)
 
     _left_leg.drag(_left_leg_x,_left_leg_y);
     _right_leg.drag(_right_leg_x,_right_leg_y);
+
+}
+
+void LegManager::render(sf::RenderWindow *window)
+{
+
+    _left_leg.render(window);
+    _right_leg.render(window);
 
 }

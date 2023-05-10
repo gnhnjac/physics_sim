@@ -84,7 +84,7 @@ void Arm::render(sf::RenderWindow *window)
 		window->draw(line);
 
 	}
-    _p0->render(window);
-    _p1->render(window);
+    //_p0->render(window);
+    //_p1->render(window);
 
 }

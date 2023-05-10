@@ -135,7 +135,7 @@ void Rope::update_sticks()
 void Rope::check_for_stability()
 {
 
-	if (_min_stability > 0.5)
+	if (_min_stability > 0.8)
 		_allow_tear = true;
 
 	_min_stability = 1;

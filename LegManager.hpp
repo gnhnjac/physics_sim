@@ -31,6 +31,8 @@ public:
 
 	void update(bool is_left_pressed, bool is_right_pressed);
 
+    void render(sf::RenderWindow *window);
+
 private:
 
 

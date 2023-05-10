@@ -1,7 +1,7 @@
 #include "Stick.hpp"
 
 
-Stick::Stick(Point *p0, Point *p1, float length, bool hidden)
+Stick::Stick(Point *p0, Point *p1, float length, bool hidden, float width)
 {
 
     _p0 = p0;
@@ -15,6 +15,7 @@ Stick::Stick(Point *p0, Point *p1, float length, bool hidden)
         _length = length;
 
     _hidden = hidden;
+    _width = width;
 }
 
 Stick::~Stick()
@@ -104,12 +105,26 @@ void Stick::render(sf::RenderWindow *window, bool _render_points)
 
     if (!_hidden)
     {
-        sf::Vertex line[] =
+        if (_width == 1)
         {
-            sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
-            sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
-        };
-        window->draw(line,2,sf::Lines);
+            sf::Vertex line[] =
+            {
+                sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
+                sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
+            };
+            window->draw(line,2,sf::Lines);
+        }
+        else
+        {
+            float dx = _p1->_x - _p0->_x;
+            float dy = _p1->_y - _p0->_y;
+            sf::RectangleShape line(sf::Vector2f(sqrt(dx*dx+dy*dy), _width));
+            line.setPosition(_p0->_x, _p0->_y);
+            float angle = atan2(_p1->_y-_p0->_y,_p1->_x-_p0->_x);
+            line.setRotation(angle*180/M_PI);
+            window->draw(line);
+
+        }
     }
     if (_render_points)
         render_points(window);

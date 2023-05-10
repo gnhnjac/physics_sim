@@ -10,12 +10,13 @@ public:
 	Point *_p0;
 	Point *_p1;
 	float _length;
+	float _width;
 	bool _updated;
 	bool _hidden;
 
 	Stick() {}
 
-	Stick(Point *p0, Point *p1, float length=-1, bool hidden = false);
+	Stick(Point *p0, Point *p1, float length=-1, bool hidden = false, float _width = 1);
 
 	~Stick();
 
