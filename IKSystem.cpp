@@ -10,7 +10,7 @@ IKSystem::IKSystem(Point *p)
 
 }
 
-void IKSystem::add_arm(Point *p)
+void IKSystem::add_arm(Point *p, float width)
 {
 
 	Point *p0;
@@ -28,7 +28,7 @@ void IKSystem::add_arm(Point *p)
 
 	}
 
-	Arm *r = new Arm(p0,p);
+	Arm *r = new Arm(p0,p,width);
 
 	r->_parent = _last_arm;
 
@@ -37,7 +37,7 @@ void IKSystem::add_arm(Point *p)
 
 }
 
-void IKSystem::add_arm(float x, float y)
+void IKSystem::add_arm(float x, float y, float width)
 {
 
 	Point *p0;
@@ -57,7 +57,7 @@ void IKSystem::add_arm(float x, float y)
 
 	Point *p = new Point(x,y);
 
-	Arm *r = new Arm(p0,p);
+	Arm *r = new Arm(p0,p,width);
 
 	r->_parent = _last_arm;
 
@@ -76,7 +76,8 @@ void IKSystem::render(sf::RenderWindow *window)
 
 void IKSystem::drag(float x, float y)
 {
-
+	_x = _arms[0]->_p0->_x;
+	_y = _arms[0]->_p0->_y;
 	_last_arm->drag(x, y);
 
 }
@@ -91,7 +92,7 @@ void IKSystem::reach(float x, float y)
 
 void IKSystem::update()
 {
-
+	
 	_arms[0]->_p0->_x = _x;
 	_arms[0]->_p0->_y = _y;
 

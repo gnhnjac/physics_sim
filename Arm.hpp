@@ -9,10 +9,11 @@ public:
 	Point *_p0;
 	Point *_p1;
 	float _length;
+	float _width;
 	float _angle;
 	Arm *_parent = 0;
 
-	Arm(Point *p0, Point *p1);
+	Arm(Point *p0, Point *p1, float width = 1);
 
 	float get_endx();
 

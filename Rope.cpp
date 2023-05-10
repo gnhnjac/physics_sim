@@ -42,11 +42,11 @@ Rope::Rope(Point *p0, Point *p1, float resolution, float flex_min_percent, float
 	
 }
 
-void Rope::update_points()
+void Rope::update_points(sf::RenderWindow *window)
 {
 
 	for (FlexStick s : _sticks)
-		s.update_points();
+		s.update_points(window);
 
 }
 

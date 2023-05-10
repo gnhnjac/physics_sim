@@ -21,7 +21,7 @@ public:
 
 	Rope(Point *p0, Point *p1, float resolution, float flex_min_percent = -1, float flex_max_percent = -1);
 
-	void update_points();
+	void update_points(sf::RenderWindow *window);
 
 	void update_sticks();
 

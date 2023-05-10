@@ -2,7 +2,7 @@
 #include <tgmath.h>
 #include <math.h>
 
-Arm::Arm(Point *p0, Point *p1)
+Arm::Arm(Point *p0, Point *p1, float width)
 {
 
 	_p0 = p0;
@@ -14,6 +14,9 @@ Arm::Arm(Point *p0, Point *p1)
 	_length = sqrt(dx*dx+dy*dy);
 
 	_angle = atan2(dy,dx);
+
+	_width = width;
+
 }
 
 float Arm::get_endx()
@@ -62,13 +65,25 @@ void Arm::drag(float x, float y)
 void Arm::render(sf::RenderWindow *window)
 {
 
-	sf::Vertex line[] =
-    {
-        sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
-        sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
-    };
-    window->draw(line,2,sf::Lines);
+	if (_width == 1)
+	{
+		sf::Vertex line[] =
+	    {
+	        sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
+	        sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
+	    };
+	    window->draw(line,2,sf::Lines);
+	}
+	else
+	{
 
+		sf::RectangleShape line(sf::Vector2f(_length, _width));
+		line.setPosition(_p0->_x, _p0->_y);
+		float angle = atan2(_p1->_y-_p0->_y,_p1->_x-_p0->_x);
+		line.setRotation(angle*180/M_PI);
+		window->draw(line);
+
+	}
     _p0->render(window);
     _p1->render(window);
 

@@ -16,9 +16,9 @@ public:
 
 	IKSystem(Point *p);
 
-	void add_arm(Point *p);
+	void add_arm(Point *p, float width = 1);
 
-	void add_arm(float x, float y);
+	void add_arm(float x, float y, float width = 1);
 
 	void drag(float x, float y);
 

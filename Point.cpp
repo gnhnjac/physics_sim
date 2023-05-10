@@ -1,7 +1,7 @@
 #include "Point.hpp"
 #include <tgmath.h>
 
-Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, float radius)
+Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius)
 {
 
 	_x = x;
@@ -11,13 +11,14 @@ Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidd
 	_pinned = is_pinned;
 	_hidden = hidden;
 	_zero_grav = zero_grav;
+	_follow_mouse = follow_mouse;
 
 	if (radius != -1)
 		_radius = radius;
 
 }
 
-Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, float radius)
+Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius)
 {
 
 	_x = x;
@@ -27,13 +28,14 @@ Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, floa
 	_pinned = is_pinned;
 	_hidden = hidden;
 	_zero_grav = zero_grav;
+	_follow_mouse = follow_mouse;
 
 	if (radius != -1)
 		_radius = radius;
 
 }
 
-void Point::update()
+void Point::update(sf::RenderWindow *window)
 {
 
 	if(_pinned || _updated)
@@ -49,6 +51,24 @@ void Point::update()
 	_y += vy;
 	if (!_zero_grav)
 		_y += _gravity;
+
+	if (_follow_mouse)
+	{
+
+		// get global mouse position
+    	sf::Vector2i position = sf::Mouse::getPosition(*window);
+
+		float dx = position.x - _x;
+		float dy = position.y - _y;
+		float dist = sqrt(dx*dx + dy*dy);
+
+		// normalize to apply force
+		dx /= dist;
+		dy /= dist;
+
+		apply_force(dx,dy);
+
+	}
 
 	_updated = true;
 

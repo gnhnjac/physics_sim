@@ -1,7 +1,7 @@
 #include "Stick.hpp"
 
 
-Stick::Stick(Point *p0, Point *p1)
+Stick::Stick(Point *p0, Point *p1, float length, bool hidden)
 {
 
     _p0 = p0;
@@ -9,8 +9,12 @@ Stick::Stick(Point *p0, Point *p1)
 
     float dx = _p1->_x - _p0->_x;
     float dy = _p1->_y - _p0->_y;
-    _length = sqrt(dx*dx + dy*dy);
+    if (length == -1)
+        _length = sqrt(dx*dx + dy*dy);
+    else
+        _length = length;
 
+    _hidden = hidden;
 }
 
 Stick::~Stick()
@@ -71,11 +75,11 @@ float Stick::update()
 
 }
 
-void Stick::update_points()
+void Stick::update_points(sf::RenderWindow *window)
 {
 
-    _p0->update();
-    _p1->update();
+    _p0->update(window);
+    _p1->update(window);
 
 }
 
@@ -98,13 +102,15 @@ void Stick::render_points(sf::RenderWindow *window)
 void Stick::render(sf::RenderWindow *window, bool _render_points)
 {
 
-    sf::Vertex line[] =
+    if (!_hidden)
     {
-        sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
-        sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
-    };
-    window->draw(line,2,sf::Lines);
-
+        sf::Vertex line[] =
+        {
+            sf::Vertex(sf::Vector2f(_p0->_x, _p0->_y)),
+            sf::Vertex(sf::Vector2f(_p1->_x, _p1->_y))
+        };
+        window->draw(line,2,sf::Lines);
+    }
     if (_render_points)
         render_points(window);
 

@@ -10,18 +10,18 @@ public:
 	Point *_p0;
 	Point *_p1;
 	float _length;
-
 	bool _updated;
+	bool _hidden;
 
 	Stick() {}
 
-	Stick(Point *p0, Point *p1);
+	Stick(Point *p0, Point *p1, float length=-1, bool hidden = false);
 
 	~Stick();
 
 	virtual float update();
 
-	void update_points();
+	void update_points(sf::RenderWindow *window);
 
 	void constrain_points(sf::RenderWindow *window);
 

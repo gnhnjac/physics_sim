@@ -4,6 +4,7 @@
 #include "Point.hpp"
 #include "FlexStick.hpp"
 #include "Rope.hpp"
+#include <string>
 
 class VerletSolver
 {
@@ -15,6 +16,7 @@ public:
 	std::vector<Rope *> _ropes = {};
 
 	bool _render_points = true;
+	Point *_currently_moving = 0;
 
 	uint32_t _iters;
 
@@ -33,6 +35,10 @@ public:
 	Point *check_move_point(float mx, float my);
 
 	void render(sf::RenderWindow *window);
+
+	void save_to_file(std::string filename, sf::RenderWindow *window);
+
+	void load_from_file(std::string filename, float left, float top);
 
 private:
 

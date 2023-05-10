@@ -1,0 +1,54 @@
+    solver.add_stick(&left_leg);
+    solver.add_stick(&right_leg);
+    solver.add_stick(&left_thigh);
+    solver.add_stick(&right_thigh);
+    solver.add_stick(&pelvis);
+    solver.add_stick(&left_abdomen);
+    solver.add_stick(&right_abdomen);
+    solver.add_stick(&top);
+    solver.add_stick(&chest_stabilizer);
+    solver.add_stick(&left_arm1);
+    solver.add_stick(&right_arm1);
+    solver.add_stick(&left_arm2);
+    solver.add_stick(&right_arm2);
+
+
+
+    Point left_foot(230.f,500.f);
+    Point right_foot(280.f,500.f);
+
+    Point left_knee(230.f,470.f);
+    Point right_knee(280.f,470.f);
+
+    Point left_pelvis(230.f,440.f);
+    Point right_pelvis(280.f,440.f);
+
+    Point left_shoulder(230.f,400.f);
+    Point right_shoulder(280.f,400.f);
+
+    Point left_elbow(210.f,400.f);
+    Point left_hand(190.f,400.f);
+
+    Point right_elbow(300.f,400.f);
+    Point right_hand(320.f,400.f);
+
+    Stick left_leg(&left_foot, &left_knee);
+    Stick right_leg(&right_foot, &right_knee);
+
+    Stick left_thigh(&left_knee, &left_pelvis);
+    Stick right_thigh(&right_knee, &right_pelvis);
+
+    Stick pelvis(&left_pelvis, &right_pelvis);
+
+    Stick left_abdomen(&left_pelvis, &left_shoulder);
+    Stick right_abdomen(&right_pelvis, &right_shoulder);
+
+    Stick top(&left_shoulder, &right_shoulder);
+
+    Stick left_arm1(&left_shoulder, &left_elbow);
+    Stick right_arm1(&right_shoulder, &right_elbow);
+
+    Stick left_arm2(&left_elbow, &left_hand);
+    Stick right_arm2(&right_elbow, &right_hand);
+
+    Stick chest_stabilizer(&left_shoulder, &right_pelvis);
