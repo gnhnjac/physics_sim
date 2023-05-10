@@ -6,9 +6,10 @@
 #include "VerletSolver.hpp"
 #include "IKSystem.hpp"
 #include "LegManager.hpp"
+#include "PhotonBeam.hpp"
 #include <iostream>
 
-#define SOLVER_ITERS 1000
+#define SOLVER_ITERS 100
 
 int main()
 {
@@ -51,6 +52,11 @@ int main()
     Stick chest_stabilizer(&left_shoulder, &right_pelvis, -1, true);
     Stick chest_stabilizer2(&right_shoulder, &left_pelvis, -1, true);
 
+    FlexStick left_wing(&left_shoulder, &head, 0.7,1.3,3);
+    left_wing._hidden = true;
+    FlexStick right_wing(&right_shoulder, &head, 0.7,1.3,3);
+    right_wing._hidden = true;
+
     Stick bot(&left_pelvis, &right_pelvis, -1, false, 2);
 
     Stick left_top(&left_shoulder, &mid_top, -1, false, 2);
@@ -75,12 +81,16 @@ int main()
     Stick gun_stabilizer(&gun_front_top, &gun_handle_bot, -1, true);
     Stick gun_stabilizer2(&gun_front_bot, &gun_handle_top, -1, true);
 
-    Rope decor_rope(&right_shoulder,&right_pelvis,0.2);
-    Rope decor_rope2(&left_shoulder,&right_pelvis,0.2);
-    Rope decor_rope3(&mid_top,&right_pelvis,0.2);
+    Point anchor(100.f,500.f, true);
+
+    Rope decor_rope(&anchor,&left_shoulder, 0.2);
+    Rope decor_rope2(&anchor,&left_pelvis, 0.2);
+    Rope decor_rope3(&anchor,&right_shoulder, 0.2);
 
     VerletSolver solver(SOLVER_ITERS);
 
+    solver.add_flex_stick(&left_wing);
+    solver.add_flex_stick(&right_wing);
     solver.add_stick(&left_thigh);
     solver.add_stick(&right_thigh);
     solver.add_stick(&left_calf);
@@ -104,19 +114,26 @@ int main()
     solver.add_stick(&gun_handle_bot_part);
     solver.add_stick(&chest_stabilizer);
     solver.add_stick(&chest_stabilizer2);
-    solver.add_rope(&decor_rope);
-    solver.add_rope(&decor_rope2);
-    solver.add_rope(&decor_rope3);
+    //solver.add_rope(&decor_rope);
+   // solver.add_rope(&decor_rope2);
+   // solver.add_rope(&decor_rope3);
 
     solver.save_to_file("killy.map", &window);
 
     LegManager leg_manager(500.f, &left_pelvis,&left_knee,&left_foot,&right_pelvis,&right_knee,&right_foot);
 
+    PhotonBeam photon_beam(&gun_handle_top,&gun_front_top);
+
     Point p0(0.f,0.f);
 
-    IKSystem iks(&p0);
-    for(int i = 10; i < 250; i+=10)
-        iks.add_arm(i,i,log10(i));
+    // IKSystem iks(&p0);
+    // for(int i = 10; i < 250; i+=10)
+    //     iks.add_arm(i,i,log10(i));
+
+    Point p1(100.f,100.f, true);
+    Point p2(200.f,200.f, true);
+    Rope r(&p1,&p2,0.2);
+    solver.add_rope(&r);
 
     while (window.isOpen())
     {
@@ -139,15 +156,19 @@ int main()
 
         window.clear();
 
-        solver.update(&window);
         leg_manager.update(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), sf::Keyboard::isKeyPressed(sf::Keyboard::Right));
+        solver.update(&window);
 
-        sf::Vector2i position = sf::Mouse::getPosition(window);
-        iks.reach(position.x,position.y);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            photon_beam.charge();
+        }
+        else
+            photon_beam.shoot();
 
         solver.render(&window);
         leg_manager.render(&window);
-        iks.render(&window);
+        photon_beam.render(&window);
         head.apply_force(0,-10);
         window.display();
 

@@ -89,6 +89,8 @@ void VerletSolver::update(sf::RenderWindow *window)
 
     if(_currently_moving)
     {
+    	_currently_moving->_oldx = _currently_moving->_x;
+        _currently_moving->_oldy = _currently_moving->_y;
         _currently_moving->_x = position.x;
         _currently_moving->_y = position.y;
     }

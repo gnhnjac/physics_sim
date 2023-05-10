@@ -24,6 +24,8 @@ class LegManager
 
     Point *_left_knee;
     Point *_right_knee;
+    Point *_left_foot;
+    Point *_right_foot;
 
 public:
 

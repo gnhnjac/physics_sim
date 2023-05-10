@@ -66,6 +66,9 @@ void Point::update(sf::RenderWindow *window)
 		dx /= dist;
 		dy /= dist;
 
+		dx /= 2;
+		dy /= 2;
+
 		apply_force(dx,dy);
 
 	}

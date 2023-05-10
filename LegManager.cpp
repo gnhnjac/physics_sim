@@ -27,6 +27,9 @@ LegManager::LegManager(float base, Point *left_pelvis, Point *left_knee, Point *
 	_left_knee = left_knee;
 	_right_knee = right_knee;
 
+    _left_foot = left_foot;
+    _right_foot = right_foot;
+
 }
 
 void LegManager::update(bool is_left_pressed, bool is_right_pressed)
