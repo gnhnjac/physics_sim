@@ -1,28 +1,18 @@
 #include "LegManager.hpp"
 #include <tgmath.h>
 
-LegManager::LegManager(float base, Point *left_pelvis, Point *left_knee, Point *left_foot, Point *right_pelvis, Point *right_knee, Point *right_foot)
+LegManager::LegManager(Point *left_pelvis, Point *left_knee, Point *left_foot, Point *right_pelvis, Point *right_knee, Point *right_foot)
 	: _right_leg(right_pelvis), _left_leg(left_pelvis)
 {
 
-	_base = base;
-
 	_left_leg_x = left_foot->_x;
-	_left_leg_y = _base;
-
 	_right_leg_x = right_foot->_x;
-	_right_leg_y = _base;
-
-	_grnd_left = _left_leg_x;
-	_grnd_right = _right_leg_x;
 
     _right_leg.add_arm(right_knee,2);
     _right_leg.add_arm(right_foot,2);
 
     _left_leg.add_arm(left_knee,2);
     _left_leg.add_arm(left_foot,2);
-
-	_step_time = M_PI/_step_cycles;
 
 	_left_knee = left_knee;
 	_right_knee = right_knee;
@@ -31,86 +21,93 @@ LegManager::LegManager(float base, Point *left_pelvis, Point *left_knee, Point *
     _right_foot = right_foot;
 
 }
-
-void LegManager::update(bool is_left_pressed, bool is_right_pressed)
+#include <iostream>
+void LegManager::update(bool is_left_pressed, bool is_right_pressed, bool is_up_pressed, float dt)
 {
 
-	if (is_left_pressed && !_walking_left)
-        {
+    if (is_up_pressed && !_is_jumping)
+    {
+        _is_jumping = true;
+        _left_foot->apply_force(0,-_left_foot->_gravity*_jump_height);
+        _right_foot->apply_force(0,-_right_foot->_gravity*_jump_height);
+    }
 
-            _angle = 0;
-            if (_moving_left_leg)
-            {
-                _left_leg_x = _grnd_left+_step_cycles*_stride;
-                _left_leg_y = _base;
-            }
-            else
-            {
-                _right_leg_x = _grnd_right;
-                _right_leg_y = _base;
-            }
-            _walking_left = true;
-            _moving_left_leg = true;
 
-        }
-    else if (is_right_pressed && _walking_left)
+    if (500.f - _left_foot->_y > 4 && 500.f - _right_foot->_y > 4)
+    {
+        _left_foot->_is_detached_from_ground = true;
+        _right_foot->_is_detached_from_ground = true;
+        _left_leg_x = _left_foot->_x;
+        _right_leg_x = _right_foot->_x;
+        return;
+    }
+
+    _is_jumping = false;
+    _left_foot->_is_detached_from_ground = false;
+    _right_foot->_is_detached_from_ground = false;
+
+    if (is_left_pressed && _cooldown == 0)
     {
 
-        _angle = 0;
-        if (!_moving_left_leg)
+        if  (!_walking_left)
         {
-            _right_leg_x = _grnd_right-_step_cycles*_stride;
-            _right_leg_y = _base;
+            if (_moving_left_leg)
+                _right_leg_x -= _stride;
+            _moving_left_leg = true;
+            _walking_left = true;
         }
         else
         {
-            _left_leg_x = _grnd_left;
-            _left_leg_y = _base;
+            if (_moving_left_leg)
+                _left_leg_x -= _stride;
+            else
+                _right_leg_x -= _stride;
+
+            _moving_left_leg = !_moving_left_leg;
         }
-        _walking_left = false;
-        _moving_left_leg = false;
+        _cooldown = _cooldown_seconds;
 
     }
-
-    if (is_left_pressed || is_right_pressed)
+    else if(is_right_pressed && _cooldown == 0)
     {
-        _angle+=_step_time;
-        if (_angle >= M_PI)
+
+        if  (_walking_left)
         {
-            _angle = 0;
+            if (!_moving_left_leg)
+            {
+                _left_leg_x += _stride;
+            }
+            _moving_left_leg = false;
+            _walking_left = false;
+        }
+        else
+        {
             if (_moving_left_leg)
-                _grnd_left = _left_leg_x;
+                _left_leg_x += _stride;
             else
-                _grnd_right = _right_leg_x;
+                _right_leg_x += _stride;
+
             _moving_left_leg = !_moving_left_leg;
         }
 
-        if (_moving_left_leg)
-        {
-            _left_leg_x += _stride*(_walking_left ? -1 : 1);
-            _left_leg_y = _base-sin(_angle)*_step_height;
-        }
-        else
-        {
-            _right_leg_x += _stride*(_walking_left ? -1 : 1);
-            _right_leg_y = _base-sin(_angle)*_step_height;
-        }
+        _cooldown = _cooldown_seconds;
 
     }
+    
+    _left_leg.drag(_left_leg_x,raycast_to_grnd(_left_leg_x));
+    _right_leg.drag(_right_leg_x,raycast_to_grnd(_right_leg_x));
+    
 
-    if (_walking_left)
-    {
-        _left_knee->apply_force(-2,0);
-        _right_knee->apply_force(-2,0);
-    }
-    else
-    {
-        _left_knee->apply_force(2,0);
-        _right_knee->apply_force(2,0);
-    }
+    _cooldown -= dt;
+    if (_cooldown <= 0)
+        _cooldown = 0;
 
-    _left_leg.drag(_left_leg_x,_left_leg_y);
-    _right_leg.drag(_right_leg_x,_right_leg_y);
+}
+
+float LegManager::raycast_to_grnd(float x)
+{
+
+    return 500.f;
 
 }
 

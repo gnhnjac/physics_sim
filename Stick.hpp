@@ -13,10 +13,13 @@ public:
 	float _width;
 	bool _updated;
 	bool _hidden;
+	float _requested_dx = -1;
+	float _requested_dy = -1;
+	float _steer_force = 0.1;
 
 	Stick() {}
 
-	Stick(Point *p0, Point *p1, float length=-1, bool hidden = false, float _width = 1);
+	Stick(Point *p0, Point *p1, float length=-1, bool hidden = false, float _width = 1, float steer_angle = -1);
 
 	~Stick();
 

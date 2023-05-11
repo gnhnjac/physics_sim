@@ -1,7 +1,7 @@
 #include "Stick.hpp"
+#include <tgmath.h>
 
-
-Stick::Stick(Point *p0, Point *p1, float length, bool hidden, float width)
+Stick::Stick(Point *p0, Point *p1, float length, bool hidden, float width, float steer_angle)
 {
 
     _p0 = p0;
@@ -16,6 +16,13 @@ Stick::Stick(Point *p0, Point *p1, float length, bool hidden, float width)
 
     _hidden = hidden;
     _width = width;
+
+    if (steer_angle != -1)
+    {
+        _requested_dx = cos(steer_angle)*_length;
+        _requested_dy = -sin(steer_angle)*_length;
+    }
+
 }
 
 Stick::~Stick()
@@ -75,12 +82,37 @@ float Stick::update()
     return 1;
 
 }
-
 void Stick::update_points(sf::RenderWindow *window)
 {
 
     _p0->update(window);
     _p1->update(window);
+
+    // try to steer towards requested angle
+    if (_requested_dx != -1)
+    {
+
+        if ((_p0->_is_ground_dependant && _p0->_is_detached_from_ground) || (_p1->_is_ground_dependant && _p1->_is_detached_from_ground))
+            return;
+
+        float curr_dx = _p1->_x - _p0->_x;
+        float curr_dy = _p1->_y - _p0->_y;
+
+        float delta_dx = _requested_dx-curr_dx;
+        float delta_dy = _requested_dy-curr_dy;
+
+        if (abs(delta_dy*_steer_force) > _p0->_gravity)
+        {
+
+            if (delta_dy < 0)
+                delta_dy = -_p0->_gravity/_steer_force;
+            else
+                delta_dy = _p0->_gravity/_steer_force;
+        }
+
+        _p1->apply_force(delta_dx*_steer_force,delta_dy*_steer_force);
+
+    }
 
 }
 

@@ -1,7 +1,7 @@
 #include "Point.hpp"
 #include <tgmath.h>
 
-Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius)
+Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius, bool is_ground_dependant)
 {
 
 	_x = x;
@@ -16,9 +16,11 @@ Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidd
 	if (radius != -1)
 		_radius = radius;
 
+	_is_ground_dependant = is_ground_dependant;
+
 }
 
-Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius)
+Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius, bool is_ground_dependant)
 {
 
 	_x = x;
@@ -32,6 +34,8 @@ Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, bool
 
 	if (radius != -1)
 		_radius = radius;
+
+	_is_ground_dependant = is_ground_dependant;
 
 }
 
@@ -52,6 +56,18 @@ void Point::update(sf::RenderWindow *window)
 	if (!_zero_grav)
 		_y += _gravity;
 
+	float width = window->getSize().x;
+	float height = window->getSize().y;
+
+	if (height - _y < 4)
+	{
+		if (!_zero_grav) // normal force
+			_y -= _gravity;
+		_x -= (vx-_gravity)*_floor_friction_coefficient; // floor friction force
+		// vx *= 0.01;
+		// _x += vx;
+	}
+
 	if (_follow_mouse)
 	{
 
@@ -65,9 +81,6 @@ void Point::update(sf::RenderWindow *window)
 		// normalize to apply force
 		dx /= dist;
 		dy /= dist;
-
-		dx /= 2;
-		dy /= 2;
 
 		apply_force(dx,dy);
 

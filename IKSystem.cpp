@@ -10,7 +10,7 @@ IKSystem::IKSystem(Point *p)
 
 }
 
-void IKSystem::add_arm(Point *p, float width)
+void IKSystem::add_arm(Point *p, float width, float length)
 {
 
 	Point *p0;
@@ -29,6 +29,8 @@ void IKSystem::add_arm(Point *p, float width)
 	}
 
 	Arm *r = new Arm(p0,p,width);
+	if (length != -1)
+		r->_length = length;
 
 	r->_parent = _last_arm;
 

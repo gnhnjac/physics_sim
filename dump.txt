@@ -1,0 +1,75 @@
+	if (is_left_pressed && !_walking_left)
+        {
+
+            // _angle = 0;
+            // if (_moving_left_leg)
+            // {
+            //     _left_leg_x = _grnd_left+_step_cycles*_stride;
+            //     _left_leg_y = _base;
+            // }
+            // else
+            // {
+            //     _right_leg_x = _grnd_right;
+            //     _right_leg_y = _base;
+            // }
+            _walking_left = true;
+            _moving_left_leg = true;
+
+        }
+    else if (is_right_pressed && _walking_left)
+    {
+
+        // _angle = 0;
+        // if (!_moving_left_leg)
+        // {
+        //     _right_leg_x = _grnd_right-_step_cycles*_stride;
+        //     _right_leg_y = _base;
+        // }
+        // else
+        // {
+        //     _left_leg_x = _grnd_left;
+        //     _left_leg_y = _base;
+        // }
+        _walking_left = false;
+        _moving_left_leg = false;
+        if (_left_foot->_y < 500.f)
+            _left_leg_x += _stride*10;
+
+    }
+
+    if (is_left_pressed || is_right_pressed)
+    {
+        // _angle+=_step_time;
+        // if (_angle >= M_PI)
+        // {
+        //     _angle = 0;
+        //     if (_moving_left_leg)
+        //         _grnd_left = _left_leg_x;
+        //     else
+        //         _grnd_right = _right_leg_x;
+        //     _moving_left_leg = !_moving_left_leg;
+        // }
+
+        // if (_moving_left_leg)
+        // {
+        //     _left_leg_x += _stride*(_walking_left ? -1 : 1);
+        //     _left_leg_y = _base-sin(_angle)*_step_height;
+        // }
+        // else
+        // {
+        //     _right_leg_x += _stride*(_walking_left ? -1 : 1);
+        //     _right_leg_y = _base-sin(_angle)*_step_height;
+        // }
+
+    }
+
+    // if (_walking_left)
+    // {
+    //     _left_knee->apply_force(-2,0);
+    //     _right_knee->apply_force(-2,0);
+    // }
+    // else
+    // {
+    //     _left_knee->apply_force(2,0);
+    //     _right_knee->apply_force(2,0);
+    // }
