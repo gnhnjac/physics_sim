@@ -15,19 +15,21 @@ public:
 	float _gravity = 0.098f;
 	float _friction = 0.99f;
 	float _floor_friction_coefficient = 2;
+	float _attract_force_coefficient = 1;
+	float _repel_force_coefficient = -0.1;
 	bool _pinned;
 	bool _updated;
 	bool _hidden;
 	bool _zero_grav;
-	bool _follow_mouse;
+	int _follow_mouse;
 	bool _is_ground_dependant = false;
 	bool _is_detached_from_ground = false;
 
 	Point() {}
 
-	Point(float x, float y, float oldx, float oldy, bool is_pinned = false, bool hidden = false, bool zero_grav = false, bool follow_mouse = false, float radius = -1, bool is_ground_dependant = false);
+	Point(float x, float y, float oldx, float oldy, bool is_pinned = false, bool hidden = false, bool zero_grav = false, int follow_mouse = 0, float radius = -1, bool is_ground_dependant = false);
 
-	Point(float x, float y, bool is_pinned = false, bool hidden = false, bool zero_grav = false, bool follow_mouse = false, float radius = -1, bool is_ground_dependant = false);
+	Point(float x, float y, bool is_pinned = false, bool hidden = false, bool zero_grav = false, int follow_mouse = 0, float radius = -1, bool is_ground_dependant = false);
 
 	void update(sf::RenderWindow *window);
 

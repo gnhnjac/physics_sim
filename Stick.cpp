@@ -1,6 +1,13 @@
 #include "Stick.hpp"
 #include <tgmath.h>
 
+float remap(float value, float low1, float high1, float low2, float high2)
+{
+
+    return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
+
+}
+
 Stick::Stick(Point *p0, Point *p1, float length, bool hidden, float width, float steer_angle)
 {
 
@@ -82,6 +89,7 @@ float Stick::update()
     return 1;
 
 }
+
 void Stick::update_points(sf::RenderWindow *window)
 {
 
@@ -101,16 +109,30 @@ void Stick::update_points(sf::RenderWindow *window)
         float delta_dx = _requested_dx-curr_dx;
         float delta_dy = _requested_dy-curr_dy;
 
-        if (abs(delta_dy*_steer_force) > _p0->_gravity)
+        delta_dx /= _length;
+        delta_dy /= _length;
+
+        float steer_force_x = remap(fabs(delta_dx), 0, 1, _steer_force,_min_steer_force);
+        float steer_force_y = remap(fabs(delta_dy), 0, 1, _steer_force,_min_steer_force);
+
+        if (fabs(delta_dy*steer_force_y) > _p0->_gravity*20)
         {
 
             if (delta_dy < 0)
-                delta_dy = -_p0->_gravity/_steer_force;
+                delta_dy = -_p0->_gravity*20/steer_force_y;
             else
-                delta_dy = _p0->_gravity/_steer_force;
+                delta_dy = _p0->_gravity*20/steer_force_y;
         }
 
-        _p1->apply_force(delta_dx*_steer_force,delta_dy*_steer_force);
+        if (fabs(delta_dy) > 0.5)
+        {
+            if (delta_dx > 0)
+                delta_dx = -_rescue_force;
+            else
+                delta_dx = _rescue_force;
+        }
+
+        _p1->apply_force(delta_dx*steer_force_x,delta_dy*steer_force_y);
 
     }
 

@@ -1,7 +1,7 @@
 #include "Point.hpp"
 #include <tgmath.h>
 
-Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius, bool is_ground_dependant)
+Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidden, bool zero_grav, int follow_mouse, float radius, bool is_ground_dependant)
 {
 
 	_x = x;
@@ -20,7 +20,7 @@ Point::Point(float x, float y, float oldx, float oldy, bool is_pinned, bool hidd
 
 }
 
-Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, bool follow_mouse, float radius, bool is_ground_dependant)
+Point::Point(float x, float y, bool is_pinned, bool hidden, bool zero_grav, int follow_mouse, float radius, bool is_ground_dependant)
 {
 
 	_x = x;
@@ -68,7 +68,7 @@ void Point::update(sf::RenderWindow *window)
 		// _x += vx;
 	}
 
-	if (_follow_mouse)
+	if (_follow_mouse == 1 || _follow_mouse	== -1)
 	{
 
 		// get global mouse position
@@ -82,7 +82,9 @@ void Point::update(sf::RenderWindow *window)
 		dx /= dist;
 		dy /= dist;
 
-		apply_force(dx,dy);
+		float force_coefficient = (_follow_mouse == 1) ? _attract_force_coefficient : _repel_force_coefficient;
+
+		apply_force(dx*force_coefficient,dy*force_coefficient);
 
 	}
 

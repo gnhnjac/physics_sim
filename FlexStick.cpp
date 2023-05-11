@@ -1,13 +1,7 @@
+
 #include "FlexStick.hpp"
 
-float remap(float value, float low1, float high1, float low2, float high2)
-{
-
-	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
-
-}
-
-FlexStick::FlexStick(Point *p0, Point *p1, float min_length_percent, float max_length_percent, float max_stress_percent)
+FlexStick::FlexStick(Point *p0, Point *p1, float min_length_percent, float max_length_percent, float max_stress_percent, bool hidden)
 {
 
 	_p0 = p0;
@@ -22,6 +16,7 @@ FlexStick::FlexStick(Point *p0, Point *p1, float min_length_percent, float max_l
     _max_stress = length*max_stress_percent;
 
     _width = 1;
+    _hidden = hidden;
 
 }
 

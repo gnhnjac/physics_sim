@@ -240,7 +240,7 @@ void VerletSolver::load_from_file(std::string filename, float left, float top)
 		bool is_pinned;
 		bool hidden;
 		bool zero_grav;
-		bool follow_mouse;
+		int follow_mouse;
 		float radius;
 
 		s >> index >> px >> py >> is_pinned >> hidden >> zero_grav >> follow_mouse >> radius;

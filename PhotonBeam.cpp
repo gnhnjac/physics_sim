@@ -9,7 +9,7 @@ PhotonBeam::PhotonBeam(Point *handle, Point *point)
 
 }
 
-void PhotonBeam::charge()
+void PhotonBeam::charge(Point *center_of_mass)
 {
 
 	if (_charging == -1)
@@ -20,7 +20,7 @@ void PhotonBeam::charge()
 	if (_charging >= _release_max)
 	{
 		_charging = _release_max;
-		shoot();
+		shoot(center_of_mass);
 		return;
 	}
 	else
@@ -34,13 +34,13 @@ void PhotonBeam::charge()
 		dy /= length;
 
 
-		_handle->apply_force(-dx*_charging*_charging_force_multiplier,dy*_charging*_charging_force_multiplier);
+		center_of_mass->apply_force(-dx*_charging*_charging_force_multiplier,-dy*_charging*_charging_force_multiplier);
 
 	}
 	
 }
 
-void PhotonBeam::shoot()
+void PhotonBeam::shoot(Point *center_of_mass)
 {
 
 	if (_charging == -1)
@@ -55,7 +55,7 @@ void PhotonBeam::shoot()
 	dy /= length;
 
 
-	_handle->apply_force(-dx*_charging*_force_multiplier,dy*_charging*_force_multiplier);
+	center_of_mass->apply_force(-dx*_charging*_force_multiplier,-dy*_charging*_force_multiplier);
 
 	_charging = -1;
 

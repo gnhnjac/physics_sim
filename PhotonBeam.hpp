@@ -11,16 +11,18 @@ public:
 	float _charging = -1;
 	float _release_max = 10;
 	float _max_radius = 40;
-	float _charge_increment = 0.01;
+	float _charge_increment = 0.02;
 	float _singularity_rate = 10;
-	float _force_multiplier = 30;
-	float _charging_force_multiplier = 0.1;
+	float _force_multiplier = 10;
+	float _charging_force_multiplier = 0.5;
 
 	PhotonBeam(Point *handle, Point *point);
 
-	void charge();
+	PhotonBeam() {};
 
-	void shoot();
+	void charge(Point *center_of_mass);
+
+	void shoot(Point *center_of_mass);
 
 	void render(sf::RenderWindow *window);
 

@@ -9,9 +9,10 @@ class LegManager
     float _right_leg_x;
     bool _moving_left_leg = true;
     bool _walking_left = true;
-    bool _is_jumping = false;
+    bool _is_midair = false;
     float _jump_height = 50;
     float _stride = 40;
+    float _leg_gap = 10;
     float _cooldown = 0;
     float _cooldown_seconds = 0.2;
     IKSystem _right_leg;
@@ -21,10 +22,13 @@ class LegManager
     Point *_right_knee;
     Point *_left_foot;
     Point *_right_foot;
+    Point *_center_of_mass;
 
 public:
 
-	LegManager(Point *left_pelvis, Point *left_knee, Point *left_foot, Point *right_pelvis, Point *right_knee, Point *right_foot);
+	LegManager(Point *center_of_mass, Point *left_pelvis, Point *left_knee, Point *left_foot, Point *right_pelvis, Point *right_knee, Point *right_foot);
+
+    LegManager() {};
 
 	void update(bool is_left_pressed, bool is_right_pressed, bool is_up_pressed, float dt);
 

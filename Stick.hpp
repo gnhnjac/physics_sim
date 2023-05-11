@@ -2,6 +2,8 @@
 #include "Point.hpp"
 #include <tgmath.h>
 
+float remap(float value, float low1, float high1, float low2, float high2);
+
 class Stick
 {
 
@@ -15,7 +17,9 @@ public:
 	bool _hidden;
 	float _requested_dx = -1;
 	float _requested_dy = -1;
-	float _steer_force = 0.1;
+	float _steer_force = 7;
+	float _min_steer_force = 3;
+	float _rescue_force = 0.5;
 
 	Stick() {}
 
