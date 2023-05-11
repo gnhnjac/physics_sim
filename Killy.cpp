@@ -107,10 +107,8 @@ void Killy::update(sf::RenderWindow	*window)
 {
 
 	sf::Vector2i position = sf::Mouse::getPosition(*window);
-    for (uint32_t i = 0; i < _solver_iters; i++)
-    {
-        _leg_manager->update(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), sf::Keyboard::isKeyPressed(sf::Keyboard::Right), sf::Keyboard::isKeyPressed(sf::Keyboard::Up), _clock->restart().asSeconds());
-    }
+    
+    _leg_manager->update(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), sf::Keyboard::isKeyPressed(sf::Keyboard::Right), sf::Keyboard::isKeyPressed(sf::Keyboard::Up), _clock->restart().asSeconds());
     _right_hand_iks->reach(position.x,position.y);
     _left_hand_iks->reach(position.x,position.y);
 
