@@ -34,6 +34,8 @@ public:
 	void constrain_points(sf::RenderWindow *window);
 
 	Point *move_point(float mx, float my);
+
+	void set_steer_angle(float angle);
 	
 	void render_points(sf::RenderWindow *window);
 

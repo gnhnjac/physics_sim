@@ -146,6 +146,14 @@ void Stick::constrain_points(sf::RenderWindow *window)
 
 }
 
+void Stick::set_steer_angle(float angle)
+{
+
+    _requested_dx = cos(angle)*_length;
+    _requested_dy = -sin(angle)*_length;
+
+}
+
 void Stick::render_points(sf::RenderWindow *window)
 {
 

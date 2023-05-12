@@ -16,16 +16,16 @@ Killy::Killy(VerletSolver *solver, uint32_t solver_iters, sf::Clock *clock)
     Point *right_hand = new Point(305.f,400.f, false, false);
 
     Point *mid_top = new Point(250.f,400.f, false, false ,false, 0, -1, true);
-    Point *head = new Point(250.f,390.f, false, false, false, -1, 5);
+    Point *head = new Point(250.f,390.f, false, false, false, 0, 5, true);
 
-    Point *left_pelvis = new Point(245.f,440.f,false,false,false);
-    Point *right_pelvis = new Point(255.f,440.f,false,false,false);
+    Point *left_pelvis = new Point(245.f,440.f,false,false,false, 0, -1, true);
+    Point *right_pelvis = new Point(255.f,440.f,false,false,false, 0, -1, true);
 
-    Point *left_knee = new Point(245.f,465.f,false,false,false);
-    Point *right_knee = new Point(255.f,465.f,false,false,false);
+    Point *left_knee = new Point(245.f,465.f,false,false,false, 0, -1, true);
+    Point *right_knee = new Point(255.f,465.f,false,false,false, 0, -1, true);
 
-    Point *left_foot = new Point(245.f,490.f,false,false,false,0,-1,true);
-    Point *right_foot = new Point(255.f,490.f,false,false,false,0,-1,true);
+    Point *left_foot = new Point(245.f,490.f,false,false,false);
+    Point *right_foot = new Point(255.f,490.f,false,false,false);
 
     Point *pelvis_bone = new Point(250.f, 430.f, false, true);
 
@@ -38,17 +38,17 @@ Killy::Killy(VerletSolver *solver, uint32_t solver_iters, sf::Clock *clock)
     Stick *left_calf = new Stick(left_foot,left_knee, -1, false, 1, M_PI/2);
     Stick *right_calf = new Stick(right_foot,right_knee, -1, false, 1, M_PI/2);
 
-    Stick *neck = new Stick(mid_top, head, -1, false, 2);
+    Stick *neck = new Stick(mid_top, head, -1, false, 2, M_PI/2);
 
     Stick *left_abdomen = new Stick(left_pelvis, left_shoulder, -1, false, 2);
     Stick *right_abdomen = new Stick(right_pelvis, right_shoulder, -1, false, 2);
 
-    FlexStick *chest_stabilizer = new FlexStick(left_shoulder, right_pelvis, 0.99,1.01,3,true);
-    FlexStick *chest_stabilizer2 = new FlexStick(right_shoulder, left_pelvis, 0.99,1.01,3,true);
+    FlexStick *chest_stabilizer = new FlexStick(left_shoulder, right_pelvis, 0.99,1.01,3,false);
+    FlexStick *chest_stabilizer2 = new FlexStick(right_shoulder, left_pelvis, 0.99,1.01,3,false);
     Stick *chest_stabilizer3 = new Stick(pelvis_bone, mid_top, -1, true, 2, M_PI/2);
 
-    FlexStick *left_wing = new FlexStick(left_shoulder, head, 0.85,1.15,3,true);
-    FlexStick *right_wing = new FlexStick(right_shoulder, head, 0.85,1.15,3,true);
+    //FlexStick *left_wing = new FlexStick(left_shoulder, head, 0.85,1.15,3,true);
+    //FlexStick *right_wing = new FlexStick(right_shoulder, head, 0.85,1.15,3,true);
 
     Stick *bot = new Stick(left_pelvis, right_pelvis, -1, false, 2);
 
@@ -65,8 +65,8 @@ Killy::Killy(VerletSolver *solver, uint32_t solver_iters, sf::Clock *clock)
 
     _solver->add_flex_stick(left_leg_stabilizer);
     _solver->add_flex_stick(right_leg_stabilizer);
-    _solver->add_flex_stick(left_wing);
-    _solver->add_flex_stick(right_wing);
+    //_solver->add_flex_stick(left_wing);
+    //_solver->add_flex_stick(right_wing);
     _solver->add_stick(left_thigh);
     _solver->add_stick(right_thigh);
     _solver->add_stick(left_calf);
@@ -84,7 +84,7 @@ Killy::Killy(VerletSolver *solver, uint32_t solver_iters, sf::Clock *clock)
     _solver->add_flex_stick(chest_stabilizer2);
     _solver->add_stick(chest_stabilizer3);
 
-    _leg_manager = new LegManager(mid_top,left_pelvis,left_knee,left_foot,right_pelvis,right_knee,right_foot);
+    _leg_manager = new LegManager(mid_top,left_thigh, left_calf, right_thigh, right_calf, left_pelvis,left_knee,left_foot,right_pelvis,right_knee,right_foot);
 
     _photon_beam = new PhotonBeam(right_hand,gun_shoot);
 
@@ -100,6 +100,7 @@ Killy::Killy(VerletSolver *solver, uint32_t solver_iters, sf::Clock *clock)
     _left_hand_iks->add_arm(gun_shoot,10);
 
     _center_of_mass	= mid_top;
+    _head = head;
 
 }
 
@@ -108,7 +109,13 @@ void Killy::update(sf::RenderWindow	*window)
 
 	sf::Vector2i position = sf::Mouse::getPosition(*window);
     
-    _leg_manager->update(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), sf::Keyboard::isKeyPressed(sf::Keyboard::Right), sf::Keyboard::isKeyPressed(sf::Keyboard::Up), _clock->restart().asSeconds());
+    _leg_manager->update(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), sf::Keyboard::isKeyPressed(sf::Keyboard::Right), sf::Keyboard::isKeyPressed(sf::Keyboard::Up), sf::Keyboard::isKeyPressed(sf::Keyboard::Down), _clock->restart().asSeconds());
+    
+    if (_leg_manager->_is_midair)
+        _head->_is_detached_from_ground = true;
+    else
+        _head->_is_detached_from_ground = false;
+
     _right_hand_iks->reach(position.x,position.y);
     _left_hand_iks->reach(position.x,position.y);
 

@@ -17,6 +17,8 @@ public:
 
 	Point *_center_of_mass;
 
+	Point *_head;
+
 	uint32_t _solver_iters;
 
 	sf::Clock *_clock;

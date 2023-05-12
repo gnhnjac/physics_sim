@@ -16,7 +16,7 @@ public:
 	float _friction = 0.99f;
 	float _floor_friction_coefficient = 2;
 	float _attract_force_coefficient = 1;
-	float _repel_force_coefficient = -0.1;
+	float _repel_force_coefficient = -1;
 	bool _pinned;
 	bool _updated;
 	bool _hidden;

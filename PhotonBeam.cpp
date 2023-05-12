@@ -31,10 +31,11 @@ void PhotonBeam::charge(Point *center_of_mass)
 		float length = sqrt(dx*dx + dy*dy);
 
 		dx /= length;
-		dy /= length;
+		//dy /= length;
 
 
-		center_of_mass->apply_force(-dx*_charging*_charging_force_multiplier,-dy*_charging*_charging_force_multiplier);
+		//center_of_mass->apply_force(-dx*_charging*_charging_force_multiplier,-dy*_charging*_charging_force_multiplier);
+		center_of_mass->apply_force(-dx*_charging*_charging_force_multiplier,0);
 
 	}
 	
@@ -79,7 +80,7 @@ void PhotonBeam::render(sf::RenderWindow *window)
     shape.setPosition(_point->_x-radius,_point->_y-radius);
     window->draw(shape);
 
-    float outer_radius = radius+pow(_charging,3);
+    float outer_radius = radius+pow(_charging,2); // pow 3
     if (_charging+1 > _release_max)
     	outer_radius = radius+scale_factor;
     for(int i = 0; i < _charging; i += _charge_increment*150)
@@ -89,7 +90,7 @@ void PhotonBeam::render(sf::RenderWindow *window)
 
     	float angle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(2*M_PI)));
 
-    	sf::RectangleShape point(sf::Vector2f(3, 3));
+    	sf::RectangleShape point(sf::Vector2f(2, 2));
         point.setPosition(_point->_x+cos(angle)*length, _point->_y-sin(angle)*length);
         window->draw(point);
 
